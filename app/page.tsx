@@ -5,6 +5,7 @@ import { useCallback, useEffect, useState } from "react";
 import { HeroCard } from "@/components/hero/hero-card";
 import { HeroCardSkeleton } from "@/components/hero/hero-card-skeleton";
 import { HeroCreateModal } from "@/components/hero/hero-create-modal";
+import { HeroDeleteModal } from "@/components/hero/hero-delete-modal";
 import { HeroDetailsModal } from "@/components/hero/hero-details-modal";
 import { HeroEditModal } from "@/components/hero/hero-edit-modal";
 import { HeroesPagination } from "@/components/hero/heroes-pagination";
@@ -17,9 +18,11 @@ export default function Home() {
   const [search, setSearch] = useState("");
   const [isFetching, setIsFetching] = useState(false);
   const [selectedHero, setSelectedHero] = useState<Hero | null>(null);
+  const [deletingHero, setDeletingHero] = useState<Hero | null>(null);
   const [editingHero, setEditingHero] = useState<Hero | null>(null);
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
 
   const { heroes, pagination, updateHeroes, updatePagination } =
@@ -80,6 +83,11 @@ export default function Home() {
     setIsEditOpen(true);
   }
 
+  function handleHeroDelete(hero: Hero) {
+    setDeletingHero(hero);
+    setIsDeleteOpen(true);
+  }
+
   async function handleHeroCreated() {
     setSearch("");
     await fetchHeroes(1);
@@ -87,6 +95,15 @@ export default function Home() {
 
   async function handleHeroUpdated() {
     await fetchHeroes(pagination.currentPage, search);
+  }
+
+  async function handleHeroDeleted() {
+    const targetPage =
+      heroes.length === 1 && pagination.currentPage > 1
+        ? pagination.currentPage - 1
+        : pagination.currentPage;
+
+    await fetchHeroes(targetPage, search);
   }
 
   return (
@@ -116,6 +133,7 @@ export default function Home() {
                   key={hero.id}
                   hero={hero}
                   onClick={handleHeroClick}
+                  onDelete={handleHeroDelete}
                   onEdit={handleHeroEdit}
                 />
               ))}
@@ -145,6 +163,13 @@ export default function Home() {
           isOpen={isEditOpen}
           onOpenChange={setIsEditOpen}
           onUpdated={handleHeroUpdated}
+        />
+
+        <HeroDeleteModal
+          hero={deletingHero}
+          isOpen={isDeleteOpen}
+          onOpenChange={setIsDeleteOpen}
+          onDeleted={handleHeroDeleted}
         />
       </div>
     </main>

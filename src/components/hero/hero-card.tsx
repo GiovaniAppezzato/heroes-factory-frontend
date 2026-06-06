@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { MoreVertical, Pencil } from "lucide-react";
+import { MoreVertical, Pencil, Trash2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -13,10 +13,16 @@ import { Hero } from "@/interfaces/hero";
 interface HeroCardProps {
   hero: Hero;
   onClick?: (hero: Hero) => void;
+  onDelete?: (hero: Hero) => void;
   onEdit?: (hero: Hero) => void;
 }
 
-export function HeroCard({ hero, onClick, onEdit }: HeroCardProps) {
+export function HeroCard({
+  hero,
+  onClick,
+  onDelete,
+  onEdit,
+}: HeroCardProps) {
   return (
     <article
       role="button"
@@ -48,15 +54,26 @@ export function HeroCard({ hero, onClick, onEdit }: HeroCardProps) {
 
         <DropdownMenuContent
           align="end"
-          className="min-w-12.7 w-12.7 rounded-lg p-1"
+          className="w-[52px] min-w-[52px] rounded-lg p-1"
           onClick={(event) => event.stopPropagation()}
         >
+          {hero.is_active ? (
+            <DropdownMenuItem
+              onSelect={() => onDelete?.(hero)}
+              aria-label="Excluir herói"
+              title="Excluir herói"
+              className="flex h-10 w-10 justify-center p-0 focus:bg-red-50"
+            >
+              <Trash2 className="size-5 text-[#dc2638]" />
+            </DropdownMenuItem>
+          ) : null}
+
           <DropdownMenuItem
             disabled={!hero.is_active}
             onSelect={() => onEdit?.(hero)}
             aria-label="Editar herói"
             title="Editar herói"
-            className="flex h-9 w-9 justify-center p-0"
+            className="flex h-10 w-10 justify-center p-0"
           >
             <Pencil className="size-5 text-[#123bcc]" />
           </DropdownMenuItem>
