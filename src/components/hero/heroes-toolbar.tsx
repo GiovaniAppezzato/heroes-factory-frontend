@@ -46,7 +46,7 @@ export function HeroesToolbar({
         type="button"
         disabled={isLoading}
         onClick={onSearchSubmit}
-        className="h-10 w-[78px] cursor-pointer rounded-full border-0 bg-white px-0 text-sm text-[#49505a] shadow-none hover:bg-white hover:text-black"
+        className="h-10 w-[78px] cursor-pointer rounded-full border-0 bg-white px-4 text-[#4b515c] shadow-none hover:bg-white hover:text-[#123bcc]"
       >
         Buscar
       </Button>
