@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 interface HeroesToolbarProps {
   search: string;
   isLoading?: boolean;
+  onCreate: () => void;
   onSearchChange: (search: string) => void;
   onSearchSubmit: () => void;
 }
@@ -13,6 +14,7 @@ interface HeroesToolbarProps {
 export function HeroesToolbar({
   search,
   isLoading = false,
+  onCreate,
   onSearchChange,
   onSearchSubmit,
 }: HeroesToolbarProps) {
@@ -20,6 +22,7 @@ export function HeroesToolbar({
     <section className="grid w-full grid-cols-1 items-center gap-4 md:grid-cols-[76px_1fr_78px] md:gap-8">
       <Button
         type="button"
+        onClick={onCreate}
         className="h-10 w-16 cursor-pointer rounded-full px-0 text-sm"
       >
         Criar

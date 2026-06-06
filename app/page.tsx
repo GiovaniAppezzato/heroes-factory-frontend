@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 
 import { HeroCard } from "@/components/hero/hero-card";
 import { HeroCardSkeleton } from "@/components/hero/hero-card-skeleton";
+import { HeroCreateModal } from "@/components/hero/hero-create-modal";
 import { HeroDetailsModal } from "@/components/hero/hero-details-modal";
 import { HeroesPagination } from "@/components/hero/heroes-pagination";
 import { HeroesToolbar } from "@/components/hero/heroes-toolbar";
@@ -16,6 +17,7 @@ export default function Home() {
   const [isFetching, setIsFetching] = useState(false);
   const [selectedHero, setSelectedHero] = useState<Hero | null>(null);
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
+  const [isCreateOpen, setIsCreateOpen] = useState(false);
 
   const { heroes, pagination, updateHeroes, updatePagination } =
     useHeroesStore();
@@ -33,6 +35,7 @@ export default function Home() {
         const { data, meta } = response.data;
 
         updateHeroes(data);
+        
         updatePagination({
           currentPage: meta.page,
           lastPage: meta.total_pages,
@@ -69,6 +72,11 @@ export default function Home() {
     setIsDetailsOpen(true);
   }
 
+  async function handleHeroCreated() {
+    setSearch("");
+    await fetchHeroes(1);
+  }
+
   return (
     <main className="min-h-screen bg-[#f6f1ef] px-8 py-12 text-[#262a31]">
       <div className="mx-auto flex min-h-[calc(100vh-96px)] w-full max-w-[1040px] flex-col">
@@ -80,6 +88,7 @@ export default function Home() {
           <HeroesToolbar
             search={search}
             isLoading={isFetching}
+            onCreate={() => setIsCreateOpen(true)}
             onSearchChange={setSearch}
             onSearchSubmit={handleSearchSubmit}
           />
@@ -106,6 +115,12 @@ export default function Home() {
           hero={selectedHero}
           isOpen={isDetailsOpen}
           onOpenChange={setIsDetailsOpen}
+        />
+
+        <HeroCreateModal
+          isOpen={isCreateOpen}
+          onOpenChange={setIsCreateOpen}
+          onCreated={handleHeroCreated}
         />
       </div>
     </main>
