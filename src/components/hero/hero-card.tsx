@@ -8,6 +8,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Switch } from "@/components/ui/switch";
 import { Hero } from "@/interfaces/hero";
 
 interface HeroCardProps {
@@ -15,6 +16,8 @@ interface HeroCardProps {
   onClick?: (hero: Hero) => void;
   onDelete?: (hero: Hero) => void;
   onEdit?: (hero: Hero) => void;
+  onToggleStatus?: (hero: Hero) => void;
+  isUpdatingStatus?: boolean;
 }
 
 export function HeroCard({
@@ -22,6 +25,8 @@ export function HeroCard({
   onClick,
   onDelete,
   onEdit,
+  onToggleStatus,
+  isUpdatingStatus = false,
 }: HeroCardProps) {
   return (
     <article
@@ -68,15 +73,32 @@ export function HeroCard({
             </DropdownMenuItem>
           ) : null}
 
-          <DropdownMenuItem
-            disabled={!hero.is_active}
-            onSelect={() => onEdit?.(hero)}
-            aria-label="Editar herói"
-            title="Editar herói"
-            className="flex h-10 w-10 justify-center p-0"
+          {hero.is_active ? (
+            <DropdownMenuItem
+              onSelect={() => onEdit?.(hero)}
+              aria-label="Editar herói"
+              title="Editar herói"
+              className="flex h-10 w-10 justify-center p-0"
+            >
+              <Pencil className="size-5 text-[#123bcc]" />
+            </DropdownMenuItem>
+          ) : null}
+          
+          <div
+            className="flex h-10 w-10 items-center justify-center"
+            onClick={(event) => event.stopPropagation()}
           >
-            <Pencil className="size-5 text-[#123bcc]" />
-          </DropdownMenuItem>
+            <Switch
+              checked={hero.is_active}
+              disabled={isUpdatingStatus}
+              aria-label={
+                hero.is_active ? "Desativar herói" : "Ativar herói"
+              }
+              title={hero.is_active ? "Desativar herói" : "Ativar herói"}
+              onCheckedChange={() => onToggleStatus?.(hero)}
+              className="h-5 w-9 [&_[data-slot=switch-thumb]]:size-4 [&_[data-slot=switch-thumb][data-state=checked]]:translate-x-4"
+            />
+          </div>
         </DropdownMenuContent>
       </DropdownMenu>
 

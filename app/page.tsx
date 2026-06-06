@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { toast } from "sonner";
 
 import { HeroCard } from "@/components/hero/hero-card";
 import { HeroCardSkeleton } from "@/components/hero/hero-card-skeleton";
@@ -13,6 +14,7 @@ import { HeroesToolbar } from "@/components/hero/heroes-toolbar";
 import { Hero } from "@/interfaces/hero";
 import HeroService from "@/services/api/hero";
 import { useHeroesStore } from "@/stores/hero";
+import { getApiErrorMessage } from "@/utilities/api";
 
 export default function Home() {
   const [search, setSearch] = useState("");
@@ -24,6 +26,9 @@ export default function Home() {
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
+  const [updatingStatusHeroId, setUpdatingStatusHeroId] = useState<
+    string | null
+  >(null);
 
   const { heroes, pagination, updateHeroes, updatePagination } =
     useHeroesStore();
@@ -106,6 +111,36 @@ export default function Home() {
     await fetchHeroes(targetPage, search);
   }
 
+  async function handleHeroStatusToggle(hero: Hero) {
+    setUpdatingStatusHeroId(hero.id);
+
+    try {
+      if (hero.is_active) {
+        await HeroService.deactivate(hero.id);
+      } else {
+        await HeroService.activate(hero.id);
+      }
+
+      await fetchHeroes(pagination.currentPage, search);
+      toast.success(
+        hero.is_active
+          ? "Herói desativado com sucesso."
+          : "Herói ativado com sucesso.",
+      );
+    } catch (error) {
+      toast.error(
+        getApiErrorMessage(
+          error,
+          hero.is_active
+            ? "Não foi possível desativar o herói."
+            : "Não foi possível ativar o herói.",
+        ),
+      );
+    } finally {
+      setUpdatingStatusHeroId(null);
+    }
+  }
+
   return (
     <main className="min-h-screen bg-[#f6f1ef] px-8 py-12 text-[#262a31]">
       <div className="mx-auto flex min-h-[calc(100vh-96px)] w-full max-w-[1040px] flex-col">
@@ -135,6 +170,8 @@ export default function Home() {
                   onClick={handleHeroClick}
                   onDelete={handleHeroDelete}
                   onEdit={handleHeroEdit}
+                  onToggleStatus={handleHeroStatusToggle}
+                  isUpdatingStatus={updatingStatusHeroId === hero.id}
                 />
               ))}
         </section>
