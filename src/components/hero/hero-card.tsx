@@ -1,15 +1,22 @@
 import Image from "next/image";
-import { MoreVertical } from "lucide-react";
+import { MoreVertical, Pencil } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Hero } from "@/interfaces/hero";
 
 interface HeroCardProps {
   hero: Hero;
   onClick?: (hero: Hero) => void;
+  onEdit?: (hero: Hero) => void;
 }
 
-export function HeroCard({ hero, onClick }: HeroCardProps) {
+export function HeroCard({ hero, onClick, onEdit }: HeroCardProps) {
   return (
     <article
       role="button"
@@ -25,16 +32,36 @@ export function HeroCard({ hero, onClick }: HeroCardProps) {
         hero.is_active ? "" : "bg-zinc-100 grayscale"
       }`}
     >
-      <Button
-        type="button"
-        variant="ghost"
-        size="icon"
-        aria-label={`Abrir ações de ${hero.nickname}`}
-        onClick={(event) => event.stopPropagation()}
-        className="absolute right-2.5 top-2.5 size-9 rounded-full text-[#2f3338] hover:bg-[#edf1ff]"
-      >
-        <MoreVertical className="size-[22px]" />
-      </Button>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon"
+            aria-label={`Abrir ações de ${hero.nickname}`}
+            onClick={(event) => event.stopPropagation()}
+            className="absolute right-2.5 top-2.5 size-9 cursor-pointer rounded-full text-[#2f3338] hover:bg-[#edf1ff]"
+          >
+            <MoreVertical className="size-[22px]" />
+          </Button>
+        </DropdownMenuTrigger>
+
+        <DropdownMenuContent
+          align="end"
+          className="min-w-12.7 w-12.7 rounded-lg p-1"
+          onClick={(event) => event.stopPropagation()}
+        >
+          <DropdownMenuItem
+            disabled={!hero.is_active}
+            onSelect={() => onEdit?.(hero)}
+            aria-label="Editar herói"
+            title="Editar herói"
+            className="flex h-9 w-9 justify-center p-0"
+          >
+            <Pencil className="size-5 text-[#123bcc]" />
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
 
       <Image
         src={hero.avatar_url}

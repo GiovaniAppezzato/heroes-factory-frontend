@@ -6,6 +6,7 @@ import { HeroCard } from "@/components/hero/hero-card";
 import { HeroCardSkeleton } from "@/components/hero/hero-card-skeleton";
 import { HeroCreateModal } from "@/components/hero/hero-create-modal";
 import { HeroDetailsModal } from "@/components/hero/hero-details-modal";
+import { HeroEditModal } from "@/components/hero/hero-edit-modal";
 import { HeroesPagination } from "@/components/hero/heroes-pagination";
 import { HeroesToolbar } from "@/components/hero/heroes-toolbar";
 import { Hero } from "@/interfaces/hero";
@@ -16,8 +17,10 @@ export default function Home() {
   const [search, setSearch] = useState("");
   const [isFetching, setIsFetching] = useState(false);
   const [selectedHero, setSelectedHero] = useState<Hero | null>(null);
+  const [editingHero, setEditingHero] = useState<Hero | null>(null);
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
+  const [isEditOpen, setIsEditOpen] = useState(false);
 
   const { heroes, pagination, updateHeroes, updatePagination } =
     useHeroesStore();
@@ -72,9 +75,18 @@ export default function Home() {
     setIsDetailsOpen(true);
   }
 
+  function handleHeroEdit(hero: Hero) {
+    setEditingHero(hero);
+    setIsEditOpen(true);
+  }
+
   async function handleHeroCreated() {
     setSearch("");
     await fetchHeroes(1);
+  }
+
+  async function handleHeroUpdated() {
+    await fetchHeroes(pagination.currentPage, search);
   }
 
   return (
@@ -100,7 +112,12 @@ export default function Home() {
                 <HeroCardSkeleton key={index} />
               ))
             : heroes.map((hero) => (
-                <HeroCard key={hero.id} hero={hero} onClick={handleHeroClick} />
+                <HeroCard
+                  key={hero.id}
+                  hero={hero}
+                  onClick={handleHeroClick}
+                  onEdit={handleHeroEdit}
+                />
               ))}
         </section>
 
@@ -121,6 +138,13 @@ export default function Home() {
           isOpen={isCreateOpen}
           onOpenChange={setIsCreateOpen}
           onCreated={handleHeroCreated}
+        />
+
+        <HeroEditModal
+          hero={editingHero}
+          isOpen={isEditOpen}
+          onOpenChange={setIsEditOpen}
+          onUpdated={handleHeroUpdated}
         />
       </div>
     </main>
