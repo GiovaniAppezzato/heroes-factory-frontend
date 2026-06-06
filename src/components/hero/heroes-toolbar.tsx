@@ -1,4 +1,5 @@
 import { Search } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
@@ -16,16 +17,16 @@ export function HeroesToolbar({
   onSearchSubmit,
 }: HeroesToolbarProps) {
   return (
-    <section className="grid w-full grid-cols-1 items-center gap-4 md:grid-cols-[72px_1fr_72px] md:gap-8">
+    <section className="grid w-full grid-cols-1 items-center gap-4 md:grid-cols-[76px_1fr_78px] md:gap-8">
       <Button
         type="button"
-        className="h-9 w-15 rounded-full px-0 cursor-pointer"
+        className="h-10 w-16 cursor-pointer rounded-full px-0 text-sm"
       >
         Criar
       </Button>
 
       <label className="relative block w-full">
-        <Search className="pointer-events-none absolute left-4 top-1/2 size-4 -translate-y-1/2 text-[#20242a]" />
+        <Search className="pointer-events-none absolute left-4 top-1/2 size-[18px] -translate-y-1/2 text-[#20242a]" />
         <Input
           type="text"
           value={search}
@@ -37,7 +38,7 @@ export function HeroesToolbar({
             }
           }}
           placeholder="Digite o nome do herói"
-          className="rounded-full px-11"
+          className="h-10 rounded-full px-12 text-[15px]"
         />
       </label>
 
@@ -45,7 +46,7 @@ export function HeroesToolbar({
         type="button"
         disabled={isLoading}
         onClick={onSearchSubmit}
-        className="h-9 w-18 cursor-pointer rounded-full border-0 bg-white px-0 text-[#49505a] shadow-none hover:bg-white hover:text-black"
+        className="h-10 w-[78px] cursor-pointer rounded-full border-0 bg-white px-0 text-sm text-[#49505a] shadow-none hover:bg-white hover:text-black"
       >
         Buscar
       </Button>

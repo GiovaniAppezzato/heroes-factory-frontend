@@ -61,13 +61,13 @@ export default function Home() {
   }
 
   return (
-    <main className="min-h-screen bg-[#f6f1ef] px-6 py-11 text-[#262a31]">
-      <div className="mx-auto flex min-h-[calc(100vh-88px)] w-full max-w-245 flex-col">
-        <h1 className="text-center text-[28px] font-bold text-[#123a9f]">
+    <main className="min-h-screen bg-[#f6f1ef] px-8 py-12 text-[#262a31]">
+      <div className="mx-auto flex min-h-[calc(100vh-96px)] w-full max-w-[1040px] flex-col">
+        <h1 className="text-center text-[31px] font-bold text-[#123a9f]">
           Heróis
         </h1>
 
-        <div className="mt-11">
+        <div className="mt-12">
           <HeroesToolbar
             search={search}
             isLoading={isFetching}
@@ -76,7 +76,7 @@ export default function Home() {
           />
         </div>
 
-        <section className="mt-10 grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-5">
+        <section className="mt-11 grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-5">
           {isFetching
             ? Array.from({ length: 10 }).map((_, index) => (
                 <HeroCardSkeleton key={index} />

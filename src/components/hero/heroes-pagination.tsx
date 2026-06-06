@@ -54,25 +54,23 @@ export function HeroesPagination({
   };
 
   return (
-    <nav
-      className="mt-auto flex items-center justify-end gap-1 pt-12"
-    >
+    <nav className="mt-auto flex items-center justify-end gap-1.5 pt-12">
       <Button
         type="button"
         variant="ghost"
         size="icon"
         disabled={isLoading || currentPage === 1}
         onClick={() => onPageChange(currentPage - 1)}
-        className="size-7 cursor-pointer rounded-md text-[#d5d8df] hover:bg-white hover:text-[#123bcc] disabled:cursor-not-allowed"
+        className="size-8 cursor-pointer rounded-md text-[#d5d8df] hover:bg-white hover:text-[#123bcc] disabled:cursor-not-allowed"
       >
-        <ChevronLeft className="size-4" />
+        <ChevronLeft className="size-[18px]" />
       </Button>
 
       {getPageNumbers().map((pageNumber, index) =>
         pageNumber === -1 ? (
           <span
             key={`ellipsis-${index}`}
-            className="flex size-7 items-center justify-center text-xs text-[#a8afbd]"
+            className="flex size-8 items-center justify-center text-sm text-[#a8afbd]"
           >
             ...
           </span>
@@ -85,7 +83,7 @@ export function HeroesPagination({
             disabled={isLoading}
             aria-current={currentPage === pageNumber ? "page" : undefined}
             onClick={() => onPageChange(pageNumber)}
-            className={`size-7 cursor-pointer rounded-md text-xs font-medium shadow-none disabled:cursor-not-allowed ${
+            className={`size-8 cursor-pointer rounded-md text-sm font-medium shadow-none disabled:cursor-not-allowed ${
               currentPage === pageNumber
                 ? "bg-[#dce7ff] text-[#123bcc] hover:bg-[#dce7ff]"
                 : "text-[#b7bdca] hover:bg-white hover:text-[#123bcc]"
@@ -102,9 +100,9 @@ export function HeroesPagination({
         size="icon"
         disabled={isLoading || currentPage === totalPages}
         onClick={() => onPageChange(currentPage + 1)}
-        className="size-7 cursor-pointer rounded-md text-[#d5d8df] hover:bg-white hover:text-[#123bcc] disabled:cursor-not-allowed"
+        className="size-8 cursor-pointer rounded-md text-[#d5d8df] hover:bg-white hover:text-[#123bcc] disabled:cursor-not-allowed"
       >
-        <ChevronRight className="size-4" />
+        <ChevronRight className="size-[18px]" />
       </Button>
     </nav>
   );
