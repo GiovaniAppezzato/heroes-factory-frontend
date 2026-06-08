@@ -23,11 +23,7 @@ export default function Home() {
   const [deleteHero, setDeleteHero] = useState<Hero | null>(null);
   const [editHero, setEditHero] = useState<Hero | null>(null);
   const [toggleHero, setToggleHero] = useState<Hero | null>(null);
-  const [isViewOpen, setIsViewOpen] = useState(false);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
-  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
-  const [isEditOpen, setIsEditOpen] = useState(false);
-  const [isToggleOpen, setIsToggleOpen] = useState(false);
 
   const { heroes, pagination, updateHeroes, updatePagination } =
     useHeroesStore();
@@ -62,38 +58,34 @@ export default function Home() {
 
   useEffect(() => {
     const timeoutId = window.setTimeout(() => {
-      void fetchHeroes(1);
+      fetchHeroes(1);
     }, 0);
 
     return () => window.clearTimeout(timeoutId);
   }, [fetchHeroes]);
 
   function handleSearchSubmit() {
-    void fetchHeroes(1, search);
+    fetchHeroes(1, search);
   }
 
   function handlePageChange(page: number) {
-    void fetchHeroes(page, search);
+    fetchHeroes(page, search);
   }
 
   function handleHeroClick(hero: Hero) {
     setViewHero(hero);
-    setIsViewOpen(true);
   }
 
   function handleHeroEdit(hero: Hero) {
     setEditHero(hero);
-    setIsEditOpen(true);
   }
 
   function handleHeroDelete(hero: Hero) {
     setDeleteHero(hero);
-    setIsDeleteOpen(true);
   }
 
   function handleHeroStatusToggle(hero: Hero) {
     setToggleHero(hero);
-    setIsToggleOpen(true);
   }
 
   async function handleHeroCreated() {
@@ -167,8 +159,12 @@ export default function Home() {
 
         <HeroDetailsModal
           hero={viewHero}
-          isOpen={isViewOpen}
-          onOpenChange={setIsViewOpen}
+          isOpen={Boolean(viewHero)}
+          onOpenChange={(isOpen) => {
+            if (!isOpen) {
+              setViewHero(null);
+            }
+          }}
         />
 
         <HeroCreateModal
@@ -179,22 +175,34 @@ export default function Home() {
 
         <HeroEditModal
           hero={editHero}
-          isOpen={isEditOpen}
-          onOpenChange={setIsEditOpen}
+          isOpen={Boolean(editHero)}
+          onOpenChange={(isOpen) => {
+            if (!isOpen) {
+              setEditHero(null);
+            }
+          }}
           onUpdated={handleHeroUpdated}
         />
 
         <HeroDeleteModal
           hero={deleteHero}
-          isOpen={isDeleteOpen}
-          onOpenChange={setIsDeleteOpen}
+          isOpen={Boolean(deleteHero)}
+          onOpenChange={(isOpen) => {
+            if (!isOpen) {
+              setDeleteHero(null);
+            }
+          }}
           onDeleted={handleHeroDeleted}
         />
 
         <HeroStatusModal
           hero={toggleHero}
-          isOpen={isToggleOpen}
-          onOpenChange={setIsToggleOpen}
+          isOpen={Boolean(toggleHero)}
+          onOpenChange={(isOpen) => {
+            if (!isOpen) {
+              setToggleHero(null);
+            }
+          }}
           onStatusChanged={handleHeroStatusChanged}
         />
       </div>
