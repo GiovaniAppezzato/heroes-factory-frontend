@@ -15,20 +15,19 @@ import { HeroesToolbar } from "@/components/hero/heroes-toolbar";
 import { Hero } from "@/interfaces/hero";
 import HeroService from "@/services/api/hero";
 import { useHeroesStore } from "@/stores/hero";
-import { getApiErrorMessage } from "@/utilities/api";
 
 export default function Home() {
   const [search, setSearch] = useState("");
   const [isFetching, setIsFetching] = useState(false);
-  const [selectedHero, setSelectedHero] = useState<Hero | null>(null);
-  const [deletingHero, setDeletingHero] = useState<Hero | null>(null);
-  const [editingHero, setEditingHero] = useState<Hero | null>(null);
-  const [statusHero, setStatusHero] = useState<Hero | null>(null);
-  const [isDetailsOpen, setIsDetailsOpen] = useState(false);
+  const [viewHero, setViewHero] = useState<Hero | null>(null);
+  const [deleteHero, setDeleteHero] = useState<Hero | null>(null);
+  const [editHero, setEditHero] = useState<Hero | null>(null);
+  const [toggleHero, setToggleHero] = useState<Hero | null>(null);
+  const [isViewOpen, setIsViewOpen] = useState(false);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
-  const [isStatusOpen, setIsStatusOpen] = useState(false);
+  const [isToggleOpen, setIsToggleOpen] = useState(false);
 
   const { heroes, pagination, updateHeroes, updatePagination } =
     useHeroesStore();
@@ -52,7 +51,7 @@ export default function Home() {
           total: meta.total,
           perPage: meta.per_page,
         });
-      } catch (error) {
+      } catch {
         toast.error("Não foi possível carregar os heróis.");
       } finally {
         setIsFetching(false);
@@ -78,23 +77,23 @@ export default function Home() {
   }
 
   function handleHeroClick(hero: Hero) {
-    setSelectedHero(hero);
-    setIsDetailsOpen(true);
+    setViewHero(hero);
+    setIsViewOpen(true);
   }
 
   function handleHeroEdit(hero: Hero) {
-    setEditingHero(hero);
+    setEditHero(hero);
     setIsEditOpen(true);
   }
 
   function handleHeroDelete(hero: Hero) {
-    setDeletingHero(hero);
+    setDeleteHero(hero);
     setIsDeleteOpen(true);
   }
 
   function handleHeroStatusToggle(hero: Hero) {
-    setStatusHero(hero);
-    setIsStatusOpen(true);
+    setToggleHero(hero);
+    setIsToggleOpen(true);
   }
 
   async function handleHeroCreated() {
@@ -167,9 +166,9 @@ export default function Home() {
         />
 
         <HeroDetailsModal
-          hero={selectedHero}
-          isOpen={isDetailsOpen}
-          onOpenChange={setIsDetailsOpen}
+          hero={viewHero}
+          isOpen={isViewOpen}
+          onOpenChange={setIsViewOpen}
         />
 
         <HeroCreateModal
@@ -179,23 +178,23 @@ export default function Home() {
         />
 
         <HeroEditModal
-          hero={editingHero}
+          hero={editHero}
           isOpen={isEditOpen}
           onOpenChange={setIsEditOpen}
           onUpdated={handleHeroUpdated}
         />
 
         <HeroDeleteModal
-          hero={deletingHero}
+          hero={deleteHero}
           isOpen={isDeleteOpen}
           onOpenChange={setIsDeleteOpen}
           onDeleted={handleHeroDeleted}
         />
 
         <HeroStatusModal
-          hero={statusHero}
-          isOpen={isStatusOpen}
-          onOpenChange={setIsStatusOpen}
+          hero={toggleHero}
+          isOpen={isToggleOpen}
+          onOpenChange={setIsToggleOpen}
           onStatusChanged={handleHeroStatusChanged}
         />
       </div>
