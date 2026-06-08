@@ -9,6 +9,7 @@ import { HeroCreateModal } from "@/components/hero/hero-create-modal";
 import { HeroDeleteModal } from "@/components/hero/hero-delete-modal";
 import { HeroDetailsModal } from "@/components/hero/hero-details-modal";
 import { HeroEditModal } from "@/components/hero/hero-edit-modal";
+import { HeroStatusModal } from "@/components/hero/hero-status-modal";
 import { HeroesPagination } from "@/components/hero/heroes-pagination";
 import { HeroesToolbar } from "@/components/hero/heroes-toolbar";
 import { Hero } from "@/interfaces/hero";
@@ -22,13 +23,12 @@ export default function Home() {
   const [selectedHero, setSelectedHero] = useState<Hero | null>(null);
   const [deletingHero, setDeletingHero] = useState<Hero | null>(null);
   const [editingHero, setEditingHero] = useState<Hero | null>(null);
+  const [statusHero, setStatusHero] = useState<Hero | null>(null);
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
-  const [updatingStatusHeroId, setUpdatingStatusHeroId] = useState<
-    string | null
-  >(null);
+  const [isStatusOpen, setIsStatusOpen] = useState(false);
 
   const { heroes, pagination, updateHeroes, updatePagination } =
     useHeroesStore();
@@ -46,7 +46,6 @@ export default function Home() {
         const { data, meta } = response.data;
 
         updateHeroes(data);
-        
         updatePagination({
           currentPage: meta.page,
           lastPage: meta.total_pages,
@@ -54,7 +53,7 @@ export default function Home() {
           perPage: meta.per_page,
         });
       } catch (error) {
-        console.error("An error occurred while fetching heroes:", error);
+        toast.error("Não foi possível carregar os heróis.");
       } finally {
         setIsFetching(false);
       }
@@ -93,6 +92,11 @@ export default function Home() {
     setIsDeleteOpen(true);
   }
 
+  function handleHeroStatusToggle(hero: Hero) {
+    setStatusHero(hero);
+    setIsStatusOpen(true);
+  }
+
   async function handleHeroCreated() {
     setSearch("");
     await fetchHeroes(1);
@@ -111,34 +115,8 @@ export default function Home() {
     await fetchHeroes(targetPage, search);
   }
 
-  async function handleHeroStatusToggle(hero: Hero) {
-    setUpdatingStatusHeroId(hero.id);
-
-    try {
-      if (hero.is_active) {
-        await HeroService.deactivate(hero.id);
-      } else {
-        await HeroService.activate(hero.id);
-      }
-
-      await fetchHeroes(pagination.currentPage, search);
-      toast.success(
-        hero.is_active
-          ? "Herói desativado com sucesso."
-          : "Herói ativado com sucesso.",
-      );
-    } catch (error) {
-      toast.error(
-        getApiErrorMessage(
-          error,
-          hero.is_active
-            ? "Não foi possível desativar o herói."
-            : "Não foi possível ativar o herói.",
-        ),
-      );
-    } finally {
-      setUpdatingStatusHeroId(null);
-    }
+  async function handleHeroStatusChanged() {
+    await fetchHeroes(pagination.currentPage, search);
   }
 
   return (
@@ -171,10 +149,15 @@ export default function Home() {
                   onDelete={handleHeroDelete}
                   onEdit={handleHeroEdit}
                   onToggleStatus={handleHeroStatusToggle}
-                  isUpdatingStatus={updatingStatusHeroId === hero.id}
                 />
               ))}
         </section>
+
+        {!isFetching && heroes.length === 0 ? (
+          <p className="mt-12 rounded-lg bg-white px-6 py-8 text-center text-sm text-[#646a75] shadow-[0_4px_10px_rgba(31,41,55,0.08)]">
+            Nenhum herói encontrado.
+          </p>
+        ) : null}
 
         <HeroesPagination
           currentPage={pagination.currentPage}
@@ -207,6 +190,13 @@ export default function Home() {
           isOpen={isDeleteOpen}
           onOpenChange={setIsDeleteOpen}
           onDeleted={handleHeroDeleted}
+        />
+
+        <HeroStatusModal
+          hero={statusHero}
+          isOpen={isStatusOpen}
+          onOpenChange={setIsStatusOpen}
+          onStatusChanged={handleHeroStatusChanged}
         />
       </div>
     </main>

@@ -17,7 +17,6 @@ interface HeroCardProps {
   onDelete?: (hero: Hero) => void;
   onEdit?: (hero: Hero) => void;
   onToggleStatus?: (hero: Hero) => void;
-  isUpdatingStatus?: boolean;
 }
 
 export function HeroCard({
@@ -26,7 +25,6 @@ export function HeroCard({
   onDelete,
   onEdit,
   onToggleStatus,
-  isUpdatingStatus = false,
 }: HeroCardProps) {
   return (
     <article
@@ -83,17 +81,14 @@ export function HeroCard({
               <Pencil className="size-5 text-[#123bcc]" />
             </DropdownMenuItem>
           ) : null}
-          
+
           <div
             className="flex h-10 w-10 items-center justify-center"
             onClick={(event) => event.stopPropagation()}
           >
             <Switch
               checked={hero.is_active}
-              disabled={isUpdatingStatus}
-              aria-label={
-                hero.is_active ? "Desativar herói" : "Ativar herói"
-              }
+              aria-label={hero.is_active ? "Desativar herói" : "Ativar herói"}
               title={hero.is_active ? "Desativar herói" : "Ativar herói"}
               onCheckedChange={() => onToggleStatus?.(hero)}
               className="h-5 w-9 [&_[data-slot=switch-thumb]]:size-4 [&_[data-slot=switch-thumb][data-state=checked]]:translate-x-4"
